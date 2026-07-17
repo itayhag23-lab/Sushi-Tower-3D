@@ -61,6 +61,40 @@ function getSkyColors(height) {
 function skyGradientCSS(top, bottom) {
   return `linear-gradient(180deg, rgb(${top.join(',')}) 0%, rgb(${bottom.join(',')}) 100%)`;
 }
+let sharedAudioCtx = null;
+function getAudioCtx() {
+  if (typeof window === 'undefined') return null;
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return null;
+  if (!sharedAudioCtx) sharedAudioCtx = new Ctx();
+  if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+  return sharedAudioCtx;
+}
+function playTone(freq, duration, { type = 'sine', gain = 0.18, delay = 0 } = {}) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const osc = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  const startAt = ctx.currentTime + delay;
+  gainNode.gain.setValueAtTime(0, startAt);
+  gainNode.gain.linearRampToValueAtTime(gain, startAt + 0.01);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+  osc.connect(gainNode).connect(ctx.destination);
+  osc.start(startAt);
+  osc.stop(startAt + duration + 0.02);
+}
+function sfxLand() { playTone(220, 0.12, { type: 'triangle', gain: 0.16 }); }
+function sfxPerfect() {
+  playTone(660, 0.12, { type: 'sine', gain: 0.2 });
+  playTone(880, 0.14, { type: 'sine', gain: 0.16, delay: 0.06 });
+}
+function sfxGameOver() {
+  playTone(300, 0.18, { type: 'sawtooth', gain: 0.14 });
+  playTone(180, 0.28, { type: 'sawtooth', gain: 0.14, delay: 0.12 });
+}
+
 function randomFish() { return fishTypes[Math.floor(Math.random() * fishTypes.length)]; }
 function worldX(pixelX, pixelWidth) { return (pixelX + pixelWidth / 2 - gameAreaWidth / 2) * SCALE; }
 function worldY(pixelBottom) { return pixelBottom * SCALE; }
@@ -459,6 +493,7 @@ export default function SushiTower3D() {
         addLandedPiece(state.current.x, state.current.width, state.current.fish, 0, false);
         scene.remove(state.currentMesh);
         state.currentMesh = null;
+        sfxLand();
         spawnPiece();
         return;
       }
@@ -496,6 +531,7 @@ export default function SushiTower3D() {
       addLandedPiece(placedX, placedWidth, state.current.fish, state.stack.length - 1, isPerfect);
       scene.remove(state.currentMesh);
       state.currentMesh = null;
+      if (isPerfect) sfxPerfect(); else sfxLand();
 
       if (isPerfect) {
         let msg = null;
@@ -534,6 +570,7 @@ export default function SushiTower3D() {
         state.currentMesh = null;
       }
       stick1.visible = false; stick2.visible = false;
+      sfxGameOver();
       setFinalText(`גובה ${state.stack.length} | ניקוד ${state.points}`);
       setGameOver(true);
       setGameStarted(false);
