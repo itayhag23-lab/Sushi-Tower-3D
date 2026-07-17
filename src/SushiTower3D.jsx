@@ -30,12 +30,12 @@ const theme = {
 };
 
 const fishTypes = [
-  { name: 'סלמון', c1: '#ff9a76', c2: '#ff6f61' },
-  { name: 'טונה', c1: '#b3352c', c2: '#7a1f1f' },
-  { name: 'צהבהב', c1: '#f6e2c1', c2: '#e8c789' },
-  { name: 'מקרל', c1: '#a9b7c6', c2: '#5c7a94' },
-  { name: 'צלופח', c1: '#5a3a22', c2: '#3a2413' },
-  { name: 'דניס', c1: '#f3ede0', c2: '#dcd0b8' },
+  { name: 'Salmon', c1: '#ff9a76', c2: '#ff6f61' },
+  { name: 'Tuna', c1: '#b3352c', c2: '#7a1f1f' },
+  { name: 'Yellowtail', c1: '#f6e2c1', c2: '#e8c789' },
+  { name: 'Mackerel', c1: '#a9b7c6', c2: '#5c7a94' },
+  { name: 'Eel', c1: '#5a3a22', c2: '#3a2413' },
+  { name: 'Sea Bream', c1: '#f3ede0', c2: '#dcd0b8' },
 ];
 
 const skyStops = [
@@ -535,11 +535,11 @@ export default function SushiTower3D() {
 
       if (isPerfect) {
         let msg = null;
-        if (state.perfectStreak % 10 === 0) msg = '10 ברצף! אלוף!';
-        else if (state.perfectStreak % 5 === 0) msg = 'חמישייה מושלמת!';
-        else if (state.perfectStreak % 3 === 0) msg = 'שלישייה מושלמת!';
+        if (state.perfectStreak % 10 === 0) msg = '10 in a row! Legendary!';
+        else if (state.perfectStreak % 5 === 0) msg = 'Perfect Five!';
+        else if (state.perfectStreak % 3 === 0) msg = 'Perfect Three!';
         else {
-          const praises = ['יפה!', 'מדויק!', 'בול!', 'מושלם!', 'וואו!'];
+          const praises = ['Nice!', 'Precise!', 'Bullseye!', 'Perfect!', 'Wow!'];
           msg = praises[Math.floor(Math.random() * praises.length)];
         }
         triggerCombo(msg);
@@ -571,7 +571,7 @@ export default function SushiTower3D() {
       }
       stick1.visible = false; stick2.visible = false;
       sfxGameOver();
-      setFinalText(`גובה ${state.stack.length} | ניקוד ${state.points}`);
+      setFinalText(`Height ${state.stack.length} | Score ${state.points}`);
       setGameOver(true);
       setGameStarted(false);
 
@@ -716,10 +716,19 @@ export default function SushiTower3D() {
   function handleRestartClick(e) { e.stopPropagation(); g.current.startGame(); }
 
   return (
-    <div dir="rtl" style={{ fontFamily: "'Noto Sans JP', -apple-system, Segoe UI, Arial, sans-serif", background: theme.bg, color: theme.foreground, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 12px', minHeight: '100vh' }}>
+    <div style={{
+      fontFamily: "'Noto Sans JP', -apple-system, Segoe UI, Arial, sans-serif",
+      color: theme.foreground, display: 'flex', flexDirection: 'column', alignItems: 'center',
+      padding: '32px 16px', minHeight: '100vh', boxSizing: 'border-box',
+      background: `radial-gradient(circle at 50% -10%, rgba(161,98,7,0.16), transparent 55%), radial-gradient(circle at 85% 100%, rgba(139,29,29,0.14), transparent 50%), ${theme.bg}`,
+    }}>
       <style>{`
         @keyframes growPulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.12);} }
         @keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+        @keyframes frameGlow {
+          0%,100% { box-shadow: 0 20px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(217,169,59,0.28), 0 0 24px rgba(217,169,59,0.08); }
+          50% { box-shadow: 0 20px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(217,169,59,0.5), 0 0 34px rgba(217,169,59,0.18); }
+        }
         @keyframes comboText {
           0% { opacity:0; transform: translateY(10px) scale(0.8);}
           20% { opacity:1; transform: translateY(0) scale(1.1);}
@@ -727,53 +736,83 @@ export default function SushiTower3D() {
           80% { opacity:1;}
           100% { opacity:0; transform: translateY(-20px) scale(1);}
         }
+        .stw3d-btn {
+          padding: 12px 30px; border-radius: 999px; border: 1px solid rgba(255,224,168,0.5);
+          background: linear-gradient(160deg, #e8b84b, #a16207 78%);
+          color: #241505; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer;
+          box-shadow: 0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35);
+          transition: transform 0.15s ease, box-shadow 0.15s ease; font-family: inherit;
+        }
+        .stw3d-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
+        .stw3d-btn:active { transform: translateY(0); }
+        .stw3d-pill {
+          display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px;
+          background: rgba(28,25,23,0.55); border: 1px solid ${theme.border}; backdrop-filter: blur(6px);
+          font-size: 12px; color: ${theme.muted};
+        }
       `}</style>
 
-      <h1 style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 20, fontWeight: 600, letterSpacing: '0.01em', color: theme.foreground, margin: '0 0 4px' }}>מגדל סושי - תלת מימד</h1>
-      <p style={{ fontSize: 14, color: theme.muted, margin: '0 0 8px' }}>לחץ <strong>רווח</strong> (או געו במסך) כדי להפיל את הסושי</p>
-      <p style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 16, fontWeight: 600, color: theme.accentLight, margin: '0 0 4px' }}>גובה: {score}</p>
-      <p style={{ fontSize: 12, color: theme.muted, margin: '0 0 12px' }}>דג: {fishName}</p>
+      <div style={{ textAlign: 'center', marginBottom: 18 }}>
+        <h1 style={{
+          fontFamily: "'Noto Serif JP', serif", fontSize: 26, fontWeight: 700, letterSpacing: '0.01em', margin: '0 0 6px',
+          background: `linear-gradient(160deg, ${theme.accentLight}, #c98a26)`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
+          textShadow: '0 2px 18px rgba(217,169,59,0.25)',
+        }}>Sushi Tower 3D</h1>
+        <p style={{ fontSize: 13.5, color: theme.muted, margin: '0 0 12px' }}>Press <strong style={{ color: theme.foreground }}>SPACE</strong> (or tap the screen) to drop the sushi</p>
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+          <span className="stw3d-pill"><span style={{ color: theme.accentLight, fontWeight: 700 }}>⬆ Height</span> {score}</span>
+          <span className="stw3d-pill">🐟 {fishName}</span>
+        </div>
+      </div>
 
       <div
         onClick={handleAreaClick}
-        style={{ position: 'relative', width: 300, height: 400, background: skyBg, border: `1px solid ${theme.border}`, borderRadius: 12, overflow: 'hidden', boxShadow: `0 8px 28px rgba(0,0,0,0.55), 0 0 0 1px ${theme.border}`, transition: 'background 1.2s ease', touchAction: 'manipulation' }}
+        style={{
+          position: 'relative', width: 300, height: 400, background: skyBg, borderRadius: 18, overflow: 'hidden',
+          transition: 'background 1.2s ease', touchAction: 'manipulation',
+          animation: 'frameGlow 3.4s ease-in-out infinite',
+        }}
       >
         <div ref={mountRef} style={{ position: 'absolute', inset: 0 }} />
 
-        <div style={{ position: 'absolute', top: 8, left: 0, right: 0, textAlign: 'center', fontSize: 26, fontWeight: 700, color: 'white', textShadow: '0 1px 4px rgba(0,0,0,0.5)', pointerEvents: 'none' }}>{points}</div>
-        <div style={{ position: 'absolute', top: 10, right: 10, fontSize: 11, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', pointerEvents: 'none' }}>בולים: {perfectCount}</div>
-        <div style={{
-          position: 'absolute', top: 26, right: 10, fontSize: 11, fontWeight: 700, color: '#ffcc00',
-          textShadow: '0 1px 3px rgba(0,0,0,0.6)', pointerEvents: 'none',
-          opacity: growingActive ? 1 : 0, transform: growingActive ? 'translateY(0)' : 'translateY(-4px)',
-          transition: 'opacity 0.3s ease, transform 0.3s ease',
-          animation: growingActive ? 'growPulse 0.9s ease-in-out infinite' : 'none',
-        }}>🔥 מצב גדילה</div>
+        <div style={{ position: 'absolute', top: 10, left: 0, right: 0, textAlign: 'center', fontSize: 28, fontWeight: 800, color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.6)', pointerEvents: 'none', fontFamily: "'Noto Serif JP', serif" }}>{points}</div>
+
+        <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, pointerEvents: 'none' }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)', background: 'rgba(0,0,0,0.32)', padding: '3px 8px', borderRadius: 999, backdropFilter: 'blur(3px)' }}>✨ Perfect: {perfectCount}</div>
+          <div style={{
+            fontSize: 11, fontWeight: 700, color: '#2a1a02', background: 'linear-gradient(160deg, #ffe17a, #d9a93b)',
+            padding: '3px 9px', borderRadius: 999, textShadow: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+            opacity: growingActive ? 1 : 0, transform: growingActive ? 'translateY(0)' : 'translateY(-4px)',
+            transition: 'opacity 0.3s ease, transform 0.3s ease',
+            animation: growingActive ? 'growPulse 0.9s ease-in-out infinite' : 'none',
+          }}>🔥 Growth Mode</div>
+        </div>
 
         <p style={{
-          position: 'absolute', top: '40%', left: 0, right: 0, textAlign: 'center', fontSize: 20, fontWeight: 700,
-          color: theme.accent, textShadow: '0 0 8px white', pointerEvents: 'none', margin: 0,
+          position: 'absolute', top: '40%', left: 0, right: 0, textAlign: 'center', fontSize: 21, fontWeight: 800,
+          fontFamily: "'Noto Serif JP', serif", color: theme.accentLight, textShadow: '0 0 12px rgba(0,0,0,0.7), 0 0 22px rgba(217,169,59,0.6)', pointerEvents: 'none', margin: 0,
           opacity: comboActive ? 1 : 0,
           animation: comboActive ? 'comboText 1.1s ease-out' : 'none',
         }}>{comboText}</p>
 
         {gameOver && (
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            <p style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 20, fontWeight: 600, margin: 0 }}>נפסלת!</p>
-            <p style={{ fontSize: 16, margin: 0 }}>{finalText}</p>
-            <button onClick={handleRestartClick} style={{ padding: '10px 22px', borderRadius: 24, border: `1px solid rgba(0,0,0,0.15)`, background: theme.accent, color: theme.surface, fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.4)' }}>שחק שוב</button>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(8,6,5,0.72)', backdropFilter: 'blur(2px)', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+            <div style={{ fontSize: 34 }}>🥢</div>
+            <p style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 22, fontWeight: 700, margin: 0, color: theme.destructive, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>Game Over!</p>
+            <p style={{ fontSize: 15, margin: 0, color: '#f0e9df' }}>{finalText}</p>
+            <button className="stw3d-btn" onClick={handleRestartClick} style={{ marginTop: 6 }}>Play Again</button>
           </div>
         )}
 
         {!gameStarted && !gameOver && (
-          <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(30,20,10,0.55), rgba(10,5,0,0.72))', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: '0 24px', cursor: 'pointer' }}>
-            <div style={{ fontSize: 44, animation: 'bob 1.8s ease-in-out infinite' }}>🍣</div>
-            <h2 style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 24, fontWeight: 600, margin: '4px 0 0', textShadow: '0 2px 6px rgba(0,0,0,0.5)' }}>מגדל סושי - תלת מימד</h2>
-            <p style={{ fontSize: 13, margin: 0, color: '#f0f0f0', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>הפילו פיסת סושי בדיוק מעל הקודמת<br />ובנו את המגדל הכי גבוה שאפשר</p>
+          <div onClick={(e) => e.stopPropagation()} style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(30,20,10,0.6), rgba(8,4,0,0.82))', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10, textAlign: 'center', padding: '0 26px', cursor: 'pointer' }}>
+            <div style={{ fontSize: 46, animation: 'bob 1.8s ease-in-out infinite', filter: 'drop-shadow(0 6px 10px rgba(0,0,0,0.5))' }}>🍣</div>
+            <h2 style={{ fontFamily: "'Noto Serif JP', serif", fontSize: 25, fontWeight: 700, margin: '4px 0 0', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>Sushi Tower 3D</h2>
+            <p style={{ fontSize: 13.5, margin: 0, color: '#f0e9df', lineHeight: 1.5, textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>Drop each sushi piece exactly above the last one<br />and build the tallest tower you can</p>
             {bestHeight > 0 && (
-              <p style={{ fontSize: 13, color: theme.accentLight, fontWeight: 700, margin: '2px 0 6px', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>שיא: גובה {bestHeight} | ניקוד {bestPoints}</p>
+              <p style={{ fontSize: 13, color: theme.accentLight, fontWeight: 700, margin: '2px 0 6px', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>🏆 Best: Height {bestHeight} | Score {bestPoints}</p>
             )}
-            <button onClick={handleStartClick} style={{ padding: '10px 22px', borderRadius: 24, border: `1px solid rgba(0,0,0,0.15)`, background: theme.accent, color: theme.surface, fontSize: 15, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,0.4)' }}>התחילו לשחק</button>
+            <button className="stw3d-btn" onClick={handleStartClick} style={{ marginTop: 4 }}>Start Game</button>
           </div>
         )}
       </div>
