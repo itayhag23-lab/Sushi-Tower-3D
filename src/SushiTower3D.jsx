@@ -285,32 +285,33 @@ export default function SushiTower3D() {
       return noriTexture;
     }
 
-    let makiTexture = null;
-    function getFishTexture() {
-      if (makiTexture) return makiTexture;
+    const fishTextureCache = new Map();
+    function getFishTexture(fish) {
+      const cached = fishTextureCache.get(fish.name);
+      if (cached) return cached;
       const size = 256;
       const c = document.createElement('canvas');
       c.width = size; c.height = size;
       const ctx = c.getContext('2d');
       const cx = size / 2, cy = size / 2;
 
-      // טבעת נורי דקה בקצה החתך
+      // thin nori ring at the edge of the cut
       ctx.fillStyle = '#181f14';
       ctx.beginPath();
       ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
       ctx.fill();
 
-      // בסיס אורז לבן
+      // white rice base
       ctx.fillStyle = '#f7f1e2';
       ctx.beginPath();
       ctx.arc(cx, cy, size / 2 - size * 0.035, 0, Math.PI * 2);
       ctx.fill();
 
-      // גרגירי אורז
-      ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      for (let i = 0; i < 34; i++) {
+      // rice grains
+      ctx.fillStyle = 'rgba(255,255,255,0.65)';
+      for (let i = 0; i < 30; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const rad = size * 0.2 + Math.random() * (size * 0.28);
+        const rad = size * 0.34 + Math.random() * (size * 0.14);
         const px = cx + Math.cos(ang) * rad;
         const py = cy + Math.sin(ang) * rad;
         ctx.beginPath();
@@ -318,52 +319,73 @@ export default function SushiTower3D() {
         ctx.fill();
       }
 
-      // סלמון - חלק עליון
-      let g = ctx.createLinearGradient(cx - 40, cy - 55, cx + 40, cy - 15);
-      g.addColorStop(0, '#ffab7a');
-      g.addColorStop(1, '#ff6f4d');
-      ctx.fillStyle = g;
+      // neta (topping) - a single fish-colored fillet covering the center, styled per species
+      const R = size * 0.3;
+      ctx.save();
       ctx.beginPath();
-      ctx.ellipse(cx, cy - 34, size * 0.19, size * 0.1, -0.15, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-      ctx.lineWidth = 2;
-      for (let i = -2; i <= 2; i++) {
-        ctx.beginPath();
-        ctx.moveTo(cx - 34, cy - 34 + i * 6);
-        ctx.lineTo(cx + 34, cy - 34 + i * 6 - 6);
-        ctx.stroke();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.clip();
+
+      const grad = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+      grad.addColorStop(0, fish.c1);
+      grad.addColorStop(1, fish.c2);
+      ctx.fillStyle = grad;
+      ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+
+      if (fish.name === 'Mackerel') {
+        // iconic silver-skin zigzag pattern along the top
+        ctx.strokeStyle = 'rgba(20,30,50,0.55)';
+        ctx.lineWidth = 3;
+        for (let row = -2; row <= 1; row++) {
+          ctx.beginPath();
+          ctx.moveTo(cx - R, cy + row * 14);
+          for (let x = -R; x <= R; x += 10) {
+            ctx.lineTo(cx + x, cy + row * 14 + (Math.sin(x * 0.6 + row) * 4));
+          }
+          ctx.stroke();
+        }
+      } else if (fish.name === 'Eel') {
+        // grilled glaze sheen
+        const sheen = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy);
+        sheen.addColorStop(0, 'rgba(255,220,150,0.28)');
+        sheen.addColorStop(1, 'rgba(255,220,150,0)');
+        ctx.fillStyle = sheen;
+        ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+        ctx.fillStyle = 'rgba(30,15,5,0.35)';
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          ctx.arc(cx - R * 0.5 + i * (R * 0.28), cy + (i % 2 === 0 ? -R * 0.25 : R * 0.3), 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (fish.name === 'Sea Bream') {
+        // pale, near-translucent - thin rosy rim only
+        ctx.fillStyle = fish.c1;
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+        ctx.globalAlpha = 1;
+      } else {
+        // salmon / tuna / yellowtail and any future fish: soft diagonal fat/fiber striations
+        ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        ctx.lineWidth = 2;
+        for (let i = -3; i <= 3; i++) {
+          ctx.beginPath();
+          ctx.moveTo(cx - R, cy + i * 9);
+          ctx.lineTo(cx + R, cy + i * 9 - 12);
+          ctx.stroke();
+        }
       }
+      ctx.restore();
 
-      // אבוקדו - שמאל תחתון
-      g = ctx.createLinearGradient(cx - 55, cy + 10, cx - 10, cy + 55);
-      g.addColorStop(0, '#a7d24a');
-      g.addColorStop(1, '#5c8f2e');
-      ctx.fillStyle = g;
+      // soft edge blend between neta and rice
+      const rim = ctx.createRadialGradient(cx, cy, R * 0.82, cx, cy, R * 1.05);
+      rim.addColorStop(0, 'rgba(0,0,0,0)');
+      rim.addColorStop(1, 'rgba(0,0,0,0.12)');
+      ctx.fillStyle = rim;
       ctx.beginPath();
-      ctx.ellipse(cx - 32, cy + 30, size * 0.16, size * 0.095, 0.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(240,255,210,0.5)';
-      ctx.beginPath();
-      ctx.ellipse(cx - 32, cy + 30, size * 0.07, size * 0.04, 0.5, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 1.05, 0, Math.PI * 2);
       ctx.fill();
 
-      // גזר - ימין תחתון
-      g = ctx.createLinearGradient(cx + 10, cy + 10, cx + 55, cy + 55);
-      g.addColorStop(0, '#ffb347');
-      g.addColorStop(1, '#e8730f');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(cx + 32, cy + 30, size * 0.135, size * 0.075, -0.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255,255,255,0.25)';
-      for (let i = 0; i < 5; i++) {
-        ctx.beginPath();
-        ctx.arc(cx + 20 + i * 6, cy + 24 + (i % 2) * 8, 1.6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // וינייטה עדינה
+      // subtle overall vignette
       const vign = ctx.createRadialGradient(cx, cy, size * 0.32, cx, cy, size * 0.5);
       vign.addColorStop(0, 'rgba(0,0,0,0)');
       vign.addColorStop(1, 'rgba(0,0,0,0.18)');
@@ -374,7 +396,7 @@ export default function SushiTower3D() {
 
       const tex = new THREE.CanvasTexture(c);
       tex.anisotropy = 4;
-      makiTexture = tex;
+      fishTextureCache.set(fish.name, tex);
       return tex;
     }
 
@@ -382,7 +404,7 @@ export default function SushiTower3D() {
       const radius = (widthPixel * SCALE) / 2;
       const geo = new THREE.CylinderGeometry(radius, radius, blockHeight * SCALE, 32);
       const sideMat = new THREE.MeshStandardMaterial({ map: getNoriTexture(), roughness: 0.75, metalness: 0.02 });
-      const capMat = new THREE.MeshStandardMaterial({ map: getFishTexture(), roughness: 0.55, metalness: 0.02 });
+      const capMat = new THREE.MeshStandardMaterial({ map: getFishTexture(fish), roughness: 0.55, metalness: 0.02 });
       const mesh = new THREE.Mesh(geo, [sideMat, capMat, capMat]);
       mesh.castShadow = true;
       mesh.receiveShadow = true;
