@@ -112,7 +112,6 @@ function jiggleScale(t) {
 
 export default function SushiTower3D() {
   const mountRef = useRef(null);
-  const frameRef = useRef(null);
   const sparkLayerRef = useRef(null);
   const pointsRef = useRef(null);
   const g = useRef({});
@@ -319,6 +318,34 @@ export default function SushiTower3D() {
         ctx.fill();
       }
 
+      // avocado wedge, tucked into the rice ring at the lower-left
+      let veg = ctx.createLinearGradient(cx - size * 0.36, cy + size * 0.14, cx - size * 0.2, cy + size * 0.32);
+      veg.addColorStop(0, '#a7d24a');
+      veg.addColorStop(1, '#5c8f2e');
+      ctx.fillStyle = veg;
+      ctx.beginPath();
+      ctx.ellipse(cx - size * 0.29, cy + size * 0.21, size * 0.09, size * 0.055, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(240,255,210,0.55)';
+      ctx.beginPath();
+      ctx.ellipse(cx - size * 0.29, cy + size * 0.21, size * 0.038, size * 0.022, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // carrot wedge, tucked into the rice ring at the lower-right
+      veg = ctx.createLinearGradient(cx + size * 0.2, cy + size * 0.14, cx + size * 0.36, cy + size * 0.32);
+      veg.addColorStop(0, '#ffb347');
+      veg.addColorStop(1, '#e8730f');
+      ctx.fillStyle = veg;
+      ctx.beginPath();
+      ctx.ellipse(cx + size * 0.29, cy + size * 0.21, size * 0.075, size * 0.045, -0.7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(cx + size * 0.24 + i * 5, cy + size * 0.19 + (i % 2) * 5, 1.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       // neta (topping) - a single fish-colored fillet covering the center, styled per species
       const R = size * 0.3;
       ctx.save();
@@ -516,15 +543,6 @@ export default function SushiTower3D() {
       setTimeout(() => setComboActive(false), 1100);
     }
 
-    function shakeFrame(strength) {
-      const el = frameRef.current;
-      if (!el) return;
-      el.style.setProperty('--shake-x', `${strength}px`);
-      el.classList.remove('stw3d-shake');
-      void el.offsetWidth;
-      el.classList.add('stw3d-shake');
-    }
-
     function burstSparks(count) {
       const layer = sparkLayerRef.current;
       if (!layer) return;
@@ -551,7 +569,6 @@ export default function SushiTower3D() {
         scene.remove(state.currentMesh);
         state.currentMesh = null;
         sfxLand();
-        shakeFrame(3);
         spawnPiece();
         return;
       }
@@ -589,7 +606,7 @@ export default function SushiTower3D() {
       addLandedPiece(placedX, placedWidth, state.current.fish, state.stack.length - 1, isPerfect);
       scene.remove(state.currentMesh);
       state.currentMesh = null;
-      if (isPerfect) { sfxPerfect(); shakeFrame(6); burstSparks(14); } else { sfxLand(); shakeFrame(4); }
+      if (isPerfect) { sfxPerfect(); burstSparks(14); } else { sfxLand(); }
 
       if (isPerfect) {
         let msg = null;
@@ -629,7 +646,6 @@ export default function SushiTower3D() {
       }
       stick1.visible = false; stick2.visible = false;
       sfxGameOver();
-      shakeFrame(11);
       setFinalText(`Height ${state.stack.length} | Score ${state.points}`);
       setGameOver(true);
       setGameStarted(false);
@@ -791,13 +807,6 @@ export default function SushiTower3D() {
           80% { opacity:1;}
           100% { opacity:0; transform: translateY(-20px) scale(1);}
         }
-        @keyframes stw3dShake {
-          10%, 90% { transform: translate3d(calc(var(--shake-x, 4px) * -1), 0, 0); }
-          20%, 80% { transform: translate3d(var(--shake-x, 4px), 0, 0); }
-          30%, 50%, 70% { transform: translate3d(calc(var(--shake-x, 4px) * -1.6), 0, 0); }
-          40%, 60% { transform: translate3d(calc(var(--shake-x, 4px) * 1.6), 0, 0); }
-        }
-        .stw3d-shake { animation: stw3dShake 0.32s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes pointsPop { 0% { transform: scale(1);} 35% { transform: scale(1.32);} 100% { transform: scale(1);} }
         .stw3d-pop { animation: pointsPop 0.28s cubic-bezier(.34,1.56,.64,1); }
         @keyframes sparkFly {
@@ -843,7 +852,6 @@ export default function SushiTower3D() {
         border: '1px solid rgba(0,0,0,0.6)',
       }}>
         <div
-          ref={frameRef}
           onClick={handleAreaClick}
           style={{
             position: 'relative', width: 300, height: 400, background: skyBg, borderRadius: 14, overflow: 'hidden',
