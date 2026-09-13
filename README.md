@@ -54,10 +54,11 @@ It recreates the reference hero: oversized wordmark behind a floating bowl, drif
 fruit with pointer parallax, and four flavors you can cycle with the side arrows,
 the dots, arrow keys, or by clicking a card in the menu section.
 
-Each flavor has its own bowl — peach slices and almonds, kiwi and lime wheels, mango
-chunks, blueberries and raspberries — rendered in Blender (Cycles, top-down ortho,
-transparent film) and exported as WebP with alpha. Switching a flavor swaps the bowl
-and retints the background and the floating fruit. Fonts are self-hosted, so the page
-makes no external requests at runtime.
+Each flavor has its own bowl — kiwi wheels, pineapple chunks and rings, orange
+slices, halved strawberries — rendered in Blender (Cycles, top-down ortho,
+transparent film) and exported as WebP with alpha. Switching a flavor swaps the
+bowl, the background palette and the floating fruit around it, which are drawn as
+SVG per flavor. Fonts are self-hosted, so the page makes no external requests at
+runtime.
 
 `npm run dev` → http://localhost:5173/fruity/ · `npm run build` emits both pages.
