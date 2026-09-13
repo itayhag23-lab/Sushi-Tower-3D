@@ -1,13 +1,13 @@
 /* ---------- flavors ---------- */
 const FLAVORS = [
-  { name:'Peachberry', price:'$120', core:'#b4b76a', edge:'#4f5324', hue:'0deg',   sat:1,
+  { name:'Peachberry', price:'$120', core:'#c9a06a', edge:'#5a3a1c', img:'peachberry', deco:'-58deg',
     blurb:'Sweet, sun-ripened peach slices paired with crunchy toasted almonds on a silky smooth base.' },
-  { name:'Kiwi Lime',  price:'$98',  core:'#9fd06a', edge:'#2f5423', hue:'18deg',  sat:1.25,
+  { name:'Kiwi Lime',  price:'$98',  core:'#9fbc58', edge:'#33501c', img:'kiwilime',   deco:'0deg',
     blurb:'Sharp kiwi and cold-pressed lime, cut with coconut flakes for a finish that stays bright.' },
-  { name:'Mango Sun',  price:'$135', core:'#e0b055', edge:'#6d4413', hue:'-42deg', sat:1.3,
+  { name:'Mango Sun',  price:'$135', core:'#e0ae4e', edge:'#6d4413', img:'mango',      deco:'-42deg',
     blurb:'Alphonso mango blended thick, layered over toasted oats and a whisper of sea salt.' },
-  { name:'Berry Dusk', price:'$112', core:'#c07fb6', edge:'#472351', hue:'-150deg',sat:1.15,
-    blurb:'Wild blueberry and blackcurrant, stirred slow until the colour turns to deep evening purple.' },
+  { name:'Berry Dusk', price:'$112', core:'#a8749f', edge:'#432046', img:'berry',      deco:'188deg',
+    blurb:'Wild blueberry and raspberry, stirred slow until the colour turns to deep evening purple.' },
 ];
 
 /* ---------- decorative fruit ---------- */
@@ -80,8 +80,9 @@ requestAnimationFrame(fitWord);
 function apply(f){
   hero.style.setProperty('--bg-core', f.core);
   hero.style.setProperty('--bg-edge', f.edge);
-  bowl.style.setProperty('--bowl-hue', f.hue);
-  bowl.style.setProperty('--bowl-sat', f.sat);
+  bowl.src = `/fruity/${f.img}.webp`;
+  orchard.style.filter = `hue-rotate(${f.deco})`;
+  bowl.alt = `${f.name} smoothie bowl`;
   priceEl.textContent = f.price;
   blurbEl.textContent = f.blurb;
   dotBtns.forEach((b,i)=>b.setAttribute('aria-current', String(i===idx)));
@@ -100,12 +101,17 @@ function go(next){
   setTimeout(()=>{ paintWord(f.name, true); fitWord(); apply(f); hero.classList.remove('swapping'); }, 340);
   setTimeout(()=>{ busy = false; }, 760);
 }
+apply(FLAVORS[0]);   // paint the opening flavor's palette on load
+
 document.querySelectorAll('.step').forEach(b =>
   b.addEventListener('click', () => go(idx + Number(b.dataset.dir))));
 window.addEventListener('keydown', e => {
   if (e.key === 'ArrowDown' || e.key === 'ArrowRight') go(idx+1);
   if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  go(idx-1);
 });
+
+/* preload every bowl so a flavor swap never flashes */
+FLAVORS.forEach(f => { const i = new Image(); i.src = `/fruity/${f.img}.webp`; });
 
 /* ---------- parallax ---------- */
 const bits = [...document.querySelectorAll('.bit')];
@@ -130,8 +136,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(poin
 const cardsEl = document.querySelector('.cards');
 cardsEl.innerHTML = FLAVORS.map((f,i) => `
   <article class="card reveal" data-go="${i}" tabindex="0" role="button" aria-label="Show ${f.name}">
-    <img class="thumb" src="/fruity/bowl.png" alt="" aria-hidden="true"
-         style="filter:saturate(${f.sat}) hue-rotate(${f.hue})" />
+    <img class="thumb" src="/fruity/${f.img}.webp" alt="" aria-hidden="true" loading="lazy" />
     <span class="glow" style="background:radial-gradient(circle,${f.core}88,transparent 70%)"></span>
     <h3>${f.name}</h3><p>${f.blurb}</p>
     <span class="tag">${f.price}</span>

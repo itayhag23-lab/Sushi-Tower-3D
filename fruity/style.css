@@ -81,7 +81,7 @@ a{color:inherit;text-decoration:none}
   content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(72% 58% at 50% 48%, transparent 38%, rgba(18,20,5,.5) 100%);
 }
-.orchard{position:absolute;inset:0;pointer-events:none;z-index:1}
+.orchard{position:absolute;inset:0;pointer-events:none;z-index:1;transition:filter var(--swap) var(--ease)}
 .orchard .bit{
   position:absolute;width:var(--s);
   filter:drop-shadow(0 14px 20px rgba(28,30,8,.4)) saturate(.92) blur(var(--soft,0px));
@@ -123,8 +123,7 @@ a{color:inherit;text-decoration:none}
   position:relative;z-index:3;
   width:100%;height:auto;border-radius:50%;
   animation:hover 7s ease-in-out infinite;
-  filter:drop-shadow(0 34px 42px rgba(24,26,6,.45)) saturate(var(--bowl-sat,1)) hue-rotate(var(--bowl-hue,0deg));
-  transition:filter var(--swap) var(--ease);
+  filter:drop-shadow(0 30px 38px rgba(24,26,6,.42));
   will-change:transform;
 }
 .bowl.spin{animation:hover 7s ease-in-out infinite, spin var(--swap) var(--ease)}

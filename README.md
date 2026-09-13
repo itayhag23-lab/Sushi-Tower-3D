@@ -52,7 +52,12 @@ sushi-tower-3d/
 A second page lives at `/fruity/` (source in `fruity/`, assets in `public/fruity/`).
 It recreates the reference hero: oversized wordmark behind a floating bowl, drifting
 fruit with pointer parallax, and four flavors you can cycle with the side arrows,
-the dots, arrow keys, or by clicking a card in the menu section. Each flavor retints
-the background and the bowl. Fonts are self-hosted — no external requests at runtime.
+the dots, arrow keys, or by clicking a card in the menu section.
+
+Each flavor has its own bowl — peach slices and almonds, kiwi and lime wheels, mango
+chunks, blueberries and raspberries — rendered in Blender (Cycles, top-down ortho,
+transparent film) and exported as WebP with alpha. Switching a flavor swaps the bowl
+and retints the background and the floating fruit. Fonts are self-hosted, so the page
+makes no external requests at runtime.
 
 `npm run dev` → http://localhost:5173/fruity/ · `npm run build` emits both pages.
