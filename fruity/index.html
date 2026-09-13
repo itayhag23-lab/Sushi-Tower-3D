@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Fruity — Smoothie Bowls</title>
+<meta name="description" content="Fruity — handcrafted smoothie bowls made from sun-ripened fruit, toasted grains and a silky smooth base." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23b4b76a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%238fbd4d'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23f4f3dd'/%3E%3C/svg%3E" />
+<link rel="preload" href="/fruity/fonts/fredoka-600-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="/fruity/fonts.css" />
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<div class="noise" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="logo" href="#top">Fruity</a>
+  <nav class="menu" aria-label="Main">
+    <a href="#top" class="active">Home</a>
+    <a href="#dishes">Dishes</a>
+    <a href="#recipes">Recipes</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <button class="account" aria-label="Account">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6"/></svg>
+  </button>
+  <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="orchard" aria-hidden="true"></div>
+
+    <div class="bowl-wrap">
+      <h1 class="wordmark" aria-live="polite"><span class="word" data-word>Peachberry</span></h1>
+      <div class="bowl-shadow"></div>
+      <img class="bowl" src="/fruity/bowl.png" alt="Smoothie bowl topped with kiwi, mint and toasted grains" width="820" height="820" />
+    </div>
+
+    <div class="hero-cta">
+      <button class="buy">Buy Now</button>
+      <span class="price" data-price>$120</span>
+    </div>
+
+    <p class="blurb" data-blurb>Sweet, sun-ripened peach slices paired with crunchy toasted almonds on a silky smooth base.</p>
+
+    <div class="stepper">
+      <button class="step" data-dir="-1" aria-label="Previous flavor">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M12 5l-6 6M12 5l6 6"/></svg>
+      </button>
+      <button class="step" data-dir="1" aria-label="Next flavor">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M12 19l-6-6M12 19l6-6"/></svg>
+      </button>
+    </div>
+
+    <ol class="dots" aria-label="Flavors"></ol>
+  </section>
+
+  <section class="dishes" id="dishes">
+    <header class="sec-head">
+      <p class="eyebrow">The menu</p>
+      <h2>Bowls built for slow mornings</h2>
+    </header>
+    <div class="cards"></div>
+  </section>
+
+  <section class="recipes" id="recipes">
+    <header class="sec-head">
+      <p class="eyebrow">Recipes</p>
+      <h2>Three steps. Nothing hidden.</h2>
+    </header>
+    <ol class="steps">
+      <li><span class="num">01</span><h3>Freeze the fruit</h3><p>Whole fruit, frozen at peak ripeness. No syrups, no concentrate, no shortcuts on the base.</p></li>
+      <li><span class="num">02</span><h3>Blend it thick</h3><p>A slow, cold blend keeps the texture spoonable instead of drinkable — that is the whole trick.</p></li>
+      <li><span class="num">03</span><h3>Top it generously</h3><p>Toasted grains, coconut flakes, fresh mint. Crunch on top, silk underneath, every single time.</p></li>
+    </ol>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <h2>Get a bowl on your desk<br />by tomorrow morning.</h2>
+      <form class="signup" novalidate>
+        <input type="email" name="email" placeholder="you@example.com" aria-label="Email address" required />
+        <button type="submit">Notify me</button>
+      </form>
+      <p class="form-note" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Fruity</span>
+    <span>© 2026 — Made fresh daily</span>
+  </footer>
+</main>
+
+<script src="./main.js" type="module"></script>
+</body>
+</html>
