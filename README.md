@@ -46,3 +46,19 @@ sushi-tower-3d/
 │   └── SushiTower3D.jsx # כל לוגיקת המשחק + הרינדור התלת-מימדי (Three.js)
 └── README.md
 ```
+
+## Fruity — smoothie bowl landing page
+
+A second page lives at `/fruity/` (source in `fruity/`, assets in `public/fruity/`).
+It recreates the reference hero: oversized wordmark behind a floating bowl, drifting
+fruit with pointer parallax, and four flavors you can cycle with the side arrows,
+the dots, arrow keys, or by clicking a card in the menu section.
+
+Each flavor has its own bowl — kiwi wheels, pineapple chunks and rings, orange
+slices, halved strawberries — rendered in Blender (Cycles, top-down ortho,
+transparent film) and exported as WebP with alpha. Switching a flavor swaps the
+bowl, the background palette and the floating fruit around it, which are drawn as
+SVG per flavor. Fonts are self-hosted, so the page makes no external requests at
+runtime.
+
+`npm run dev` → http://localhost:5173/fruity/ · `npm run build` emits both pages.
